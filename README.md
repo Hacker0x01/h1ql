@@ -28,3 +28,28 @@ end
 ```
 
 ## Inner workings of H1QL
+H1QL is a subset of SQL, it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow operations that need direct file access. The H1QL engine will only return data the user is authorized to see. This is where H1QL really shines, restrictions on data access are centralized and any query can be executed safely no matter the source of the request. 
+
+```
+     +                H1QL Engine                                                                         +
+User |               +---------------------------------------------------------------------+     Database |
+     |               |                                                                     |              |
+     |               |  tokenization     validation         transform            to sql    |              |
+     |  H1QL Query   |   & parsing                                                         |  SQL Query   |
+     | +-----------> |       +               +                  +                  +       | +----------> |
+     |               |       |               |                  |                  |       |              |
+     |               | +---> | +----+------> | +------+-------> | +------+-------> | +-+-> |              |
+     |               |       |      |        |        |         |        |         |   |   |              |
+     |               |       +      |        +        |         +        |         +   |   |              |
+     |               |              +                 +                  +             +   |              |
+     |               |           SQL AST        (unsafe) H1QL      (safe) H1QL        SQL  |              |
+     |               |                                                                     |              |
+     |               +---------------------------------------------------------------------+              |
+     |                                                                                                    |
+     |                                                                                          Response  |
+     | <------------------------------------------------------------------------------------------------+ |
+     |                                                                                                    |
+     |                                                                                                    |
+```
+
+
