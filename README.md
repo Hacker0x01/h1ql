@@ -18,15 +18,6 @@ H1QL is a React component that requires a query that will be used to render its 
 </H1QL>
 ```
 
-## In Rails
-Any query executed within an H1QL block will be automatically secured.
-
-```
-H1QL.new(requester: User.first) do
-  puts User.where(‘id > 42’).count
-end
-```
-
 ## Inner workings of H1QL
 H1QL is a subset of SQL, it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow operations that need direct file access. The H1QL engine will only return data the user is authorized to see. This is where H1QL really shines, restrictions on data access are centralized and any query can be executed safely no matter the source of the request. 
 
@@ -60,5 +51,18 @@ User |               +---------------------------------------------------+     D
 3) *transform* - From the limited insecure SQL, to SQL that only allows access to data the user can see.
 
 4) *to_sql* - The last proccess is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple to_sql.
+
+
+# Bonus feature - Using H1QL in Rails to maker everything safe!
+Any query executed within an H1QL block will be automatically secured. Engineers don't have to worry about IDORs as all call to database are automatically transformed into safe to run database calls.
+```lang=ruby
+class SecretController < ApplicationController
+  def index
+    H1QL.new(requester: User.first) do  
+      return Secret.all # 1
+    end
+  end
+end
+```
 
 
