@@ -57,9 +57,17 @@ User |               +---------------------------------------------------+     D
 Any query executed within an H1QL block will be automatically secured. Engineers don't have to worry about IDORs as all call to database are automatically transformed into safe to run database calls.
 ```lang=ruby
 class SecretController < ApplicationController
+  around_action :h1ql
+  
   def index
-    H1QL.new(requester: User.first) do  
-      return Secret.all # 1
+    return Secret.all # 1
+  end
+  
+  private
+  
+  def h1ql
+    H1QL.new(requester: User.first) do
+      yield
     end
   end
 end
