@@ -53,7 +53,7 @@ User |               +---------------------------------------------------+     D
      +                                                                                  +                                     
 ```
 
-1) *tokenization & parsing* - Our setup uses https://github.com/lfittl/pg_query to parse an incomming H1QL request. It accepts a SQL query and returns a PostgreSQL AST in Ruby, using https://github.com/mvgijssel/to_arel we transform this AST into ARel which we use as intermediate storage between processes.
+1) *tokenization & parsing* - Our setup uses https://github.com/lfittl/pg_query to parse an incomming H1QL request. It accepts a SQL query and returns a Ruby respresentaion of the PostgreSQL AST, using https://github.com/mvgijssel/to_arel we transform this AST into ARel which we use as intermediate storage between processes.
 
 2) *validation* - From full SQL, to limited, but insecure, SQL
 
