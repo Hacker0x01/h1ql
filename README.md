@@ -62,11 +62,11 @@ As H1QL is SQL, our setup uses [pg_query](https://github.com/lfittl/pg_query) to
 
 *(2) transform SQL to h1ql*
 
-Using a [visitor pattern]([https://en.wikipedia.org/wiki/Visitor_pattern), we're creating a new AST that only contains attributes that are allowed in H1QL. If the algorithm stumbles upon an unsafe or unknown node, it will fail by raising an exception.
+Using a [visitor pattern]([https://en.wikipedia.org/wiki/Visitor_pattern), we're creating a new AST that only contains attributes that are allowed in H1QL. If the visitor stumbles upon an unsafe or unknown node, it will stop execution by raising an exception that will be shown to the requester.
 
 *(3) transform unsafe->safe*
 
-This processor will transform the insecure Arel AST to an Arel AST that includes the authorization contraints. Using a visitor, we again visit every node in the Arel AST and verify what the access rules apply to this object. If we visit a node that has restricted accessibility, we'll replace it with a conditional node that includes these access rules. 
+This processor will transform the insecure Arel AST to an Arel AST that includes the authorization contraints and is safe to executed. Using a visitor, we again visit every node in the Arel AST and verify what the access rules apply to this object. If we visit a node that has restricted accessibility, we'll replace it with a conditional node that includes these access rules. 
 
 *(4) to_sql*
 
