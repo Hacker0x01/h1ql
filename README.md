@@ -3,8 +3,6 @@
 **Solution:** Write React components that, using H1QL, query the database directly to get their data needs. H1QL is a safe subset of SQL and enforces strict access control to only expose data the requester is authorized to see. Engineers can quickly build reporting features as they are already familiar with the power of SQL and don’t have to invest in making it secure. H1QL is a typed language; this enables the component to know what type of graphs or other display options can be used.
 
 # Usage
-
-## In React
 H1QL is a React component that requires a query that will be used to render its children.
 
 ```
