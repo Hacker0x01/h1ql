@@ -45,11 +45,17 @@ User |               +---------------------------------------------------+     D
      +                                                                                  +                                     
 ```
 
-1) *tokenization & parsing* - Our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incomming H1QL request. It accepts a SQL query and returns a Ruby respresentaion of the PostgreSQL AST, using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into [Arel](https://github.com/rails/rails/tree/master/activerecord/lib/arel) which we use as intermediate storage between processes.
+*(1) tokenization & parsing*
 
-2) *transform SQL to h1ql* - Using a (visitor pattern)[https://en.wikipedia.org/wiki/Visitor_pattern], we're creating a new AST that only contains attributes that are allowed in H1QL. If the algorithm stumbles upon an unsafe or unknown node, it will fail by raising an exception.
+Our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incomming H1QL request. It accepts a SQL query and returns a Ruby respresentaion of the PostgreSQL AST, using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into [Arel](https://github.com/rails/rails/tree/master/activerecord/lib/arel) which we use as intermediate storage between processes.
 
-3) *transform unsafe->safe* - From the limited insecure SQL to SQL that only allows access to data the user can see. This process is probably the most important but at the same time most complicated step in the engine. 
+*(2) transform SQL to h1ql*
+
+Using a (visitor pattern)[https://en.wikipedia.org/wiki/Visitor_pattern], we're creating a new AST that only contains attributes that are allowed in H1QL. If the algorithm stumbles upon an unsafe or unknown node, it will fail by raising an exception.
+
+*(3) transform unsafe->safe*
+
+From the limited insecure SQL to SQL that only allows access to data the user can see. This process is probably the most important but at the same time most complicated step in the engine. 
 
 Using a visitor, we again visit every node in the Arel AST and verify what the access rules apply to this object. If we visit a node that has restricted accessibility, we'll replace it with a conditional node that includes these access rules. For example, if we would query teams and the system only exposes visible teams, we would go from:
 ```
@@ -60,7 +66,9 @@ To:
 SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
 ```
 
-4) *to_sql* - The last process is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple to_sql.
+*(4) to_sql*
+
+The last process is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple to_sql.
 
 # Bonus feature - Using H1QL in Rails to maker everything safe!
 Any query executed within an H1QL block will be automatically secured. Engineers don't have to worry about IDORs as all call to database are automatically transformed into safe to run database calls.
