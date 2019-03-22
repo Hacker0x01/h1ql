@@ -30,7 +30,7 @@ Into a query that includes the authorization rules:
 SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
 ```
 
-As access to every row and every column is guarded, we can safely accept any SQL request no matter the source of the request. Next to "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) SQL operation. 
+As access to every row and every column is guarded, we can safely accept any SQL request no matter the source. Next to "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) SQL operation. 
 
 ## Our (PoC) implementation:
 ```
