@@ -21,7 +21,20 @@ H1QL is a React component that requires a query that will be used to render its 
 ## Inner workings of H1QL
 H1QL is a subset of SQL, it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow operations that need direct file access. The H1QL engine will only return data the user is authorized to see. This is where H1QL really shines, restrictions on data access are centralized and any query can be executed safely no matter the source of the request. 
 
-Our (PoC) implementation looks like:
+Rather than relying on authorization logic living in the database, H1QL will transform the query send to the database to include the authorization rules. Authorization logic can be allied to row level, column level, and even column*row level (although this will give you some interesting "what is `NULL`" problems).
+
+For example, if we would query teams and the system only exposes visible teams, we would transfrom the requested query:
+```
+SELECT teams.id FROM teams;
+```
+To a query that has :
+```
+SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
+```
+
+As we guard every row and every columns, we can safely accept any SQL request. Next to do "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) operation that SQL support. 
+
+## Our (PoC) implementation:
 ```
      +                H1QL Engine                                                       +
 User |               +---------------------------------------------------+     Database |
@@ -57,14 +70,7 @@ Using a (visitor pattern)[https://en.wikipedia.org/wiki/Visitor_pattern], we're 
 
 From the limited insecure SQL to SQL that only allows access to data the user can see. This process is probably the most important but at the same time most complicated step in the engine. 
 
-Using a visitor, we again visit every node in the Arel AST and verify what the access rules apply to this object. If we visit a node that has restricted accessibility, we'll replace it with a conditional node that includes these access rules. For example, if we would query teams and the system only exposes visible teams, we would go from:
-```
-SELECT teams.id FROM teams;
-```
-To:
-```
-SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
-```
+Using a visitor, we again visit every node in the Arel AST and verify what the access rules apply to this object. If we visit a node that has restricted accessibility, we'll replace it with a conditional node that includes these access rules. 
 
 *(4) to_sql*
 
