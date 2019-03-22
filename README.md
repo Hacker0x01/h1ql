@@ -92,4 +92,6 @@ class SecretController < ApplicationController
 end
 ```
 
-
+# Inspiration
+- [NewRelic's NRQL](https://docs.newrelic.com/docs/insights/nrql-new-relic-query-language/nrql-reference/nrql-syntax-components-functions)
+- [ElasticSearch SQL](https://www.elastic.co/products/stack/elasticsearch-sql)
