@@ -60,7 +60,7 @@ User |               +---------------------------------------------------+     D
 
 *(1) tokenization & parsing*
 
-As H1QL is SQL, our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incoming H1QL request. It returns a Ruby representation of the PostgreSQL AST and using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into [Arel](https://github.com/rails/rails/tree/master/activerecord/lib/arel). We use ARel as intermediate storage between processes.
+As H1QL is SQL, our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incoming H1QL request. It returns a Ruby representation of the PostgreSQL AST and we're using [to_arel](https://github.com/mvgijssel/to_arel) to transform this AST into [Arel](https://github.com/rails/rails/tree/master/activerecord/lib/arel). We use ARel as intermediate storage between processes.
 
 *(2) transform SQL to H1QL*
 
