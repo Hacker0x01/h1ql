@@ -16,7 +16,7 @@ H1QL is a React component that requires a query that will be used to render its 
 </H1QL>
 ```
 
-## Inner workings of H1QL
+# Inner workings of H1QL
 H1QL is a subset of SQL; it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow execution of operations that require direct file access. 
 
 Rather than relying on authorization logic living in the database, H1QL will transform the query that will be sent to the database and includes the authorization rules. The authorization constraints can be applied to row level, column level, and even column*row level (although this will give you some interesting "what is `NULL`" problems).
