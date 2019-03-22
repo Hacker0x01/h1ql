@@ -5,7 +5,7 @@
 # Usage
 H1QL is a React component that requires a query that will be used to render its children.
 
-```
+```react
 <H1QL query=“SELECT COUNT(*) as count, MAX(id) as max FROM users”>
    ({ rows }) => {
       <p>
@@ -22,11 +22,11 @@ H1QL is a subset of SQL; it only supports operations that can be executed safely
 Rather than relying on authorization logic living in the database, H1QL will transform the query that will be sent to the database and includes the authorization rules. The authorization constraints can be applied to row level, column level, and even column*row level (although this will give you some interesting "what is `NULL`" problems).
 
 For example, if we would query teams and the system only exposes visible teams, H1QL would transform the requested query:
-```
+```sql
 SELECT teams.id FROM teams;
 ```
 Into a query that includes the authorization rules:
-```
+```sql
 SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
 ```
 
@@ -74,7 +74,7 @@ The last process is to transform the AST to SQL. As we use Arel as intermediate 
 
 # Bonus feature - Using H1QL Engine in Rails
 Any query executed within an H1QL block will be automatically secured. Engineers have less worries about introducing IDORs as all calls to the database are automatically secured.
-```lang=ruby
+```ruby
 class SecretController < ApplicationController
   around_action :h1ql
   
