@@ -64,7 +64,7 @@ Our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incomm
 
 *(2) transform SQL to h1ql*
 
-Using a (visitor pattern)[https://en.wikipedia.org/wiki/Visitor_pattern], we're creating a new AST that only contains attributes that are allowed in H1QL. If the algorithm stumbles upon an unsafe or unknown node, it will fail by raising an exception.
+Using a [visitor pattern]([https://en.wikipedia.org/wiki/Visitor_pattern), we're creating a new AST that only contains attributes that are allowed in H1QL. If the algorithm stumbles upon an unsafe or unknown node, it will fail by raising an exception.
 
 *(3) transform unsafe->safe*
 
