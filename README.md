@@ -5,7 +5,7 @@
 # Usage
 H1QL is a React component that requires a query that will be used to render its children.
 
-```react
+```javascript
 <H1QL query=“SELECT COUNT(*) as count, MAX(id) as max FROM users”>
    ({ rows }) => {
       <p>
