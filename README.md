@@ -21,7 +21,7 @@ H1QL is a React component that requires a query that will be used to render its 
 ## Inner workings of H1QL
 H1QL is a subset of SQL, it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow operations that need direct file access. The H1QL engine will only return data the user is authorized to see. This is where H1QL really shines, restrictions on data access are centralized and any query can be executed safely no matter the source of the request. 
 
-Rather than relying on authorization logic living in the database, H1QL will transform the query send to the database to include the authorization rules. Authorization logic can be allied to row level, column level, and even column*row level (although this will give you some interesting "what is `NULL`" problems).
+Rather than relying on authorization logic living in the database, H1QL will transform the query that will be send to the database and include the authorization rules. Authorization logic can be applied to row level, column level, and even column*row level (although this will give you some interesting "what is `NULL`" problems).
 
 For example, if we would query teams and the system only exposes visible teams, we would transfrom the requested query:
 ```
@@ -32,7 +32,7 @@ To a query that includes the authorization rules:
 SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
 ```
 
-As we guard every row and every columns, we can safely accept any SQL request. Next to do "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) SQL operation. 
+As we guard every row and every columns, we can safely accept any SQL request. Next to "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) SQL operation. 
 
 ## Our (PoC) implementation:
 ```
