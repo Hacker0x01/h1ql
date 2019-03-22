@@ -21,13 +21,13 @@ H1QL is a React component that requires a query that will be used to render its 
 ## Inner workings of H1QL
 H1QL is a subset of SQL, it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow operations that need direct file access. The H1QL engine will only return data the user is authorized to see. This is where H1QL really shines, restrictions on data access are centralized and any query can be executed safely no matter the source of the request. 
 
-Our implementation looks like:
+Our (PoC) implementation looks like:
 ```
      +                H1QL Engine                                                       +
 User |               +---------------------------------------------------+     Database |
      |               |                                                   |              |
-     |               |  tokenization  validation  transform   to sql     |              |
-     |  H1QL Query   |   & parsing                                       |  SQL Query   |
+     |               |  tokenization  transform   transform   to sql     |              |
+     |  H1QL Query   |   & parsing    sql->h1ql  unsafe->safe            |  SQL Query   |
      | +-----------> |       +            +           +          +       | +----------> |
      |               |       |            |           |          |       |              |
      |               | +---> | +---+----> | +---+---> | +---+--+ | +-+-> |              |
@@ -35,7 +35,7 @@ User |               +---------------------------------------------------+     D
      |               |       +     |      +     |     +     |    +   |   |              |
      |               |       1     +      2     +     3     +    4   +   |              |
      |               |          SQL AST      (unsafe)     (safe)    SQL  |              |
-     |               |                         H1QL        H1QL          |              |
+     |               |                         AREL        AREL          |              |
      |               |                                                   |              |
      |               +---------------------------------------------------+              |
      |                                                                                  |
@@ -45,14 +45,22 @@ User |               +---------------------------------------------------+     D
      +                                                                                  +                                     
 ```
 
-1) *tokenization & parsing* - Our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incomming H1QL request. It accepts a SQL query and returns a Ruby respresentaion of the PostgreSQL AST, using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into ARel which we use as intermediate storage between processes.
+1) *tokenization & parsing* - Our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incomming H1QL request. It accepts a SQL query and returns a Ruby respresentaion of the PostgreSQL AST, using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into [Arel](https://github.com/rails/rails/tree/master/activerecord/lib/arel) which we use as intermediate storage between processes.
 
-2) *validation* - From full SQL, to limited, but insecure, SQL
+2) *transform SQL to h1ql* - Using a (visitor pattern)[https://en.wikipedia.org/wiki/Visitor_pattern], we're creating a new AST that only contains attributes that are allowed in H1QL. If the algorithm stumbles upon an unsafe or unknown node, it will fail by raising an exception.
 
-3) *transform* - From the limited insecure SQL, to SQL that only allows access to data the user can see.
+3) *transform unsafe->safe* - From the limited insecure SQL to SQL that only allows access to data the user can see. This process is probably the most important but at the same time most complicated step in the engine. 
 
-4) *to_sql* - The last proccess is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple to_sql.
+Using a visitor, we again visit every node in the Arel AST and verify what the access rules apply to this object. If we visit a node that has restricted accessibility, we'll replace it with a conditional node that includes these access rules. For example, if we would query teams and the system only exposes visible teams, we would go from:
+```
+SELECT teams.id FROM teams;
+```
+To:
+```
+SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
+```
 
+4) *to_sql* - The last process is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple to_sql.
 
 # Bonus feature - Using H1QL in Rails to maker everything safe!
 Any query executed within an H1QL block will be automatically secured. Engineers don't have to worry about IDORs as all call to database are automatically transformed into safe to run database calls.
