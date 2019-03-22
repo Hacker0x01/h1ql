@@ -1,6 +1,6 @@
-**Problem:** We want to easily build features that show data and render graphs. In our setup, filtering and aggregating data sets in GraphQL is complicated and time-consuming.
+**Problem:** We want to quickly build features that show data and render graphs. In our setup, filtering and aggregating data sets in GraphQL is complicated and time-consuming.
 
-**Solution:** Write React components that, using H1QL, query the database directly to get their data needs. H1QL is a safe subset of SQL and enforces strict access control to only expose data the requester can see. Engineers can quickly build reporting features as they are already familiar with the power of SQL and don’t have to invest in making it secure. H1QL is a typed language, this enables the component to know what type of graphs or other display options can be used.
+**Solution:** Write React components that, using H1QL, query the database directly to get their data needs. H1QL is a safe subset of SQL and enforces strict access control to only expose data the requester is authorized to see. Engineers can quickly build reporting features as they are already familiar with the power of SQL and don’t have to invest in making it secure. H1QL is a typed language; this enables the component to know what type of graphs or other display options can be used.
 
 # Usage
 
@@ -19,20 +19,20 @@ H1QL is a React component that requires a query that will be used to render its 
 ```
 
 ## Inner workings of H1QL
-H1QL is a subset of SQL, it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow operations that need direct file access. The H1QL engine will only return data the user is authorized to see. This is where H1QL really shines, restrictions on data access are centralized and any query can be executed safely no matter the source of the request. 
+H1QL is a subset of SQL; it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow execution of operations that require direct file access. 
 
-Rather than relying on authorization logic living in the database, H1QL will transform the query that will be send to the database and include the authorization rules. Authorization logic can be applied to row level, column level, and even column*row level (although this will give you some interesting "what is `NULL`" problems).
+Rather than relying on authorization logic living in the database, H1QL will transform the query that will be sent to the database and includes the authorization rules. The authorization constraints can be applied to row level, column level, and even column*row level (although this will give you some interesting "what is `NULL`" problems).
 
-For example, if we would query teams and the system only exposes visible teams, we would transfrom the requested query:
+For example, if we would query teams and the system only exposes visible teams, H1QL would transform the requested query:
 ```
 SELECT teams.id FROM teams;
 ```
-To a query that includes the authorization rules:
+Into a query that includes the authorization rules:
 ```
 SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
 ```
 
-As we guard every row and every columns, we can safely accept any SQL request. Next to "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) SQL operation. 
+As access to every row and every column is guarded, we can safely accept any SQL request no matter the source of the request. Next to "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) SQL operation. 
 
 ## Our (PoC) implementation:
 ```
@@ -60,7 +60,7 @@ User |               +---------------------------------------------------+     D
 
 *(1) tokenization & parsing*
 
-Our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incomming H1QL request. It accepts a SQL query and returns a Ruby respresentaion of the PostgreSQL AST, using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into [Arel](https://github.com/rails/rails/tree/master/activerecord/lib/arel) which we use as intermediate storage between processes.
+Our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incoming H1QL request. It accepts a SQL query and returns a Ruby representation of the PostgreSQL AST, using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into [Arel](https://github.com/rails/rails/tree/master/activerecord/lib/arel) which we use as intermediate storage between processes.
 
 *(2) transform SQL to h1ql*
 
@@ -68,16 +68,14 @@ Using a [visitor pattern]([https://en.wikipedia.org/wiki/Visitor_pattern), we're
 
 *(3) transform unsafe->safe*
 
-From the limited insecure SQL to SQL that only allows access to data the user can see. This process is probably the most important but at the same time most complicated step in the engine. 
-
-Using a visitor, we again visit every node in the Arel AST and verify what the access rules apply to this object. If we visit a node that has restricted accessibility, we'll replace it with a conditional node that includes these access rules. 
+This processor will transform the insecure Arel AST to an Arel AST that includes the authorization contraints. Using a visitor, we again visit every node in the Arel AST and verify what the access rules apply to this object. If we visit a node that has restricted accessibility, we'll replace it with a conditional node that includes these access rules. 
 
 *(4) to_sql*
 
 The last process is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple call to `to_sql`.
 
 # Bonus feature - Using H1QL in Rails to maker everything safe!
-Any query executed within an H1QL block will be automatically secured. Engineers don't have to worry about IDORs as all call to database are automatically transformed into safe to run database calls.
+Any query executed within an H1QL block will be automatically secured. Engineers don't have to worry about IDORs as all calls to the database are automatically secured.
 ```lang=ruby
 class SecretController < ApplicationController
   around_action :h1ql
