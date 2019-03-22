@@ -68,7 +68,7 @@ SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
 
 *(4) to_sql*
 
-The last process is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple to_sql.
+The last process is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple call to `to_sql`.
 
 # Bonus feature - Using H1QL in Rails to maker everything safe!
 Any query executed within an H1QL block will be automatically secured. Engineers don't have to worry about IDORs as all call to database are automatically transformed into safe to run database calls.
