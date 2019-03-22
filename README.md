@@ -72,6 +72,11 @@ This processor will transform the insecure Arel AST to an Arel AST that includes
 
 The last process is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple call to `to_sql`.
 
+
+# Installatation
+
+Unfortunately, you can't. This project was build as part of a HackerOne hack day and is currently more an idea with a PoC than a library that can be used in production.
+
 # Bonus feature - Using H1QL Engine in Rails
 Any query executed within an H1QL block will be automatically secured. Engineers have less worries about introducing IDORs as all calls to the database are automatically secured.
 ```ruby
