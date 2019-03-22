@@ -79,6 +79,14 @@ The last process is to transform the AST to SQL. As we use Arel as intermediate 
 
 Unfortunately, you can't. This project was build as part of a HackerOne hack day and is currently more an idea with a PoC than a library that can be used in production. To prove you this libary actually works, here are some screenshots of the demo we gave to the HackerOne team.
 
+![User id of Jobert](./jobert.png)
+*You want to know what Jobert's id is on my local machine? It's 6, a pretty high number for a co-founder if you ask me ;)*
+
+![Rendering Graphs](./graphs.png)
+*Rendering fancy Graphs using the visualized mode!*
+
+![From h1ql to sql](./h1ql->sql.png)
+*We're using our existing authorization DSL to create the safe queries. The query we execute are HUGE and could use some optimization*
 
 
 # Bonus feature - Using H1QL Engine in Rails
