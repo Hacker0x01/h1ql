@@ -32,7 +32,7 @@ To a query that has :
 SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
 ```
 
-As we guard every row and every columns, we can safely accept any SQL request. Next to do "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) operation that SQL support. 
+As we guard every row and every columns, we can safely accept any SQL request. Next to do "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) SQL operation. 
 
 ## Our (PoC) implementation:
 ```
