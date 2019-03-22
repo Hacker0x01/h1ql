@@ -46,7 +46,7 @@ User |               +---------------------------------------------------+     D
      |               | +---> | +---+----> | +---+---> | +---+--+ | +-+-> |              |
      |               |       |     |      |     |     |     |    |   |   |              |
      |               |       +     |      +     |     +     |    +   |   |              |
-     |               |       1     +      2     +     3     +    4   +   |              |
+     |               |      (1)    +     (2)    +    (3)    +   (4)  +   |              |
      |               |          SQL AST      (unsafe)     (safe)    SQL  |              |
      |               |                         AREL        AREL          |              |
      |               |                                                   |              |
@@ -62,7 +62,7 @@ User |               +---------------------------------------------------+     D
 
 As H1QL is SQL, our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incoming H1QL request. It returns a Ruby representation of the PostgreSQL AST and using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into [Arel](https://github.com/rails/rails/tree/master/activerecord/lib/arel). We use ARel as intermediate storage between processes.
 
-*(2) transform SQL to h1ql*
+*(2) transform SQL to H1QL*
 
 Using a [visitor pattern]([https://en.wikipedia.org/wiki/Visitor_pattern), we're creating a new AST that only contains attributes that are allowed in H1QL. If the visitor stumbles upon an unsafe or unknown node, it will stop execution by raising an exception that will be shown to the requester.
 
