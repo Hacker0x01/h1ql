@@ -64,7 +64,7 @@ As H1QL is SQL, our setup uses [pg_query](https://github.com/lfittl/pg_query) to
 
 *(2) transform SQL to H1QL*
 
-Using a [visitor pattern]([https://en.wikipedia.org/wiki/Visitor_pattern), we're creating a new AST that only contains attributes that are allowed in H1QL. If the visitor stumbles upon an unsafe or unknown node, it will stop execution by raising an exception that will be shown to the requester.
+Using a [visitor pattern]([https://en.wikipedia.org/wiki/Visitor_pattern), we're creating a new AST that only contains nodes (column, table, functions, etc) that are allowed in H1QL. If the visitor stumbles upon an unsafe or unknown node, it will stop execution by raising an exception that will be shown to the requester.
 
 *(3) transform unsafe->safe*
 
