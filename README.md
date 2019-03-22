@@ -21,6 +21,7 @@ H1QL is a React component that requires a query that will be used to render its 
 ## Inner workings of H1QL
 H1QL is a subset of SQL, it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow operations that need direct file access. The H1QL engine will only return data the user is authorized to see. This is where H1QL really shines, restrictions on data access are centralized and any query can be executed safely no matter the source of the request. 
 
+Our implementation looks like:
 ```
      +                H1QL Engine                                                       +
 User |               +---------------------------------------------------+     Database |
@@ -44,7 +45,7 @@ User |               +---------------------------------------------------+     D
      +                                                                                  +                                     
 ```
 
-1) *tokenization & parsing* - Our setup uses https://github.com/lfittl/pg_query to parse an incomming H1QL request. It accepts a SQL query and returns a Ruby respresentaion of the PostgreSQL AST, using https://github.com/mvgijssel/to_arel we transform this AST into ARel which we use as intermediate storage between processes.
+1) *tokenization & parsing* - Our setup uses [pg_query](https://github.com/lfittl/pg_query) to parse an incomming H1QL request. It accepts a SQL query and returns a Ruby respresentaion of the PostgreSQL AST, using [to_arel](https://github.com/mvgijssel/to_arel) we transform this AST into ARel which we use as intermediate storage between processes.
 
 2) *validation* - From full SQL, to limited, but insecure, SQL
 
