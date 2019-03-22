@@ -27,7 +27,7 @@ For example, if we would query teams and the system only exposes visible teams, 
 ```
 SELECT teams.id FROM teams;
 ```
-To a query that has :
+To a query that includes the authorization rules:
 ```
 SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
 ```
