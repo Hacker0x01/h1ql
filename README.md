@@ -29,7 +29,7 @@ SELECT teams.id FROM teams;
 ```
 Into a query that includes the authorization rules:
 ```sql
-SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams
+SELECT teams.id FROM (SELECT * FROM teams WHERE visible = true) teams;
 ```
 
 As access to every row and every column is guarded, we can safely accept any SQL request no matter the source. Next to "boring" reads, this allows users to do advanced computational operations on the data they can access. For example, a user can: count, avg, max, generate time series, or any other (safe) SQL operation. 
@@ -75,7 +75,7 @@ This processor will transform the insecure Arel AST to an Arel AST that includes
 The last process is to transform the AST to SQL. As we use Arel as intermediate storage, this process is just a simple call to `to_sql`.
 
 
-# Installatation
+# Installation
 
 Unfortunately, you can't. We (@mvggijssel and @willianvdv) build as part of a HackerOne hack day and is currently more an idea with a PoC than a library that can be used in production. To prove you we actually did more than writing this readme, here are some screenshots of the demo we gave to the HackerOne team.
 
