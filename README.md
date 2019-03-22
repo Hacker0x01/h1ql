@@ -1,6 +1,6 @@
 **Problem:** We want to quickly build features that show data and render graphs. In our setup, filtering and aggregating data sets in GraphQL is complicated and time-consuming.
 
-**Solution:** Write React components that, using H1QL, query the database directly to get their data needs. H1QL is a safe subset of SQL and enforces strict access control to only expose data the requester is authorized to see. Engineers can quickly build reporting features as they are already familiar with the power of SQL and don’t have to invest in making it secure. H1QL is a typed language; this enables the component to know what type of graphs or other display options can be used.
+**Solution:** Write React components that, using H1QL, query the database directly to get their data needs. H1QL is a safe subset of SQL and enforces strict access control to only expose data the requester is authorized to see. Engineers can quickly build reporting features as they are already familiar with the power of SQL and don’t have to invest in making it secure. 
 
 # Usage
 H1QL is a React component that requires a query that will be used to render its children.
@@ -15,6 +15,8 @@ H1QL is a React component that requires a query that will be used to render its 
    }
 </H1QL>
 ```
+
+In the example posted above, the author has to build display logic of the data themselves. As H1QL query and responses are typed; some form of factory could be added to render results based on the H1QL response. 
 
 # Inner workings of H1QL
 H1QL is a subset of SQL; it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow execution of operations that require direct file access. 
