@@ -86,8 +86,7 @@ Unfortunately, you can't. We (@mvggijssel and @willianvdv) build as part of a Ha
 *Rendering fancy Graphs using the visualized mode!*
 
 ![From h1ql to sql](./h1ql->sql.png)
-*We're using our existing authorization DSL to create the safe queries. The query we execute are HUGE and could use some optimization*
-
+*We're using our existing authorization DSL to create the safe queries. The queries we execute are HUGE and could use some optimization.*
 
 # Bonus feature - Using H1QL Engine in Rails
 Any query executed within an H1QL block will be automatically secured. Engineers have less worries about introducing IDORs as all calls to the database are automatically secured.
