@@ -77,7 +77,9 @@ The last process is to transform the AST to SQL. As we use Arel as intermediate 
 
 # Installatation
 
-Unfortunately, you can't. This project was build as part of a HackerOne hack day and is currently more an idea with a PoC than a library that can be used in production.
+Unfortunately, you can't. This project was build as part of a HackerOne hack day and is currently more an idea with a PoC than a library that can be used in production. To prove you this libary actually works, here are some screenshots of the demo we gave to the HackerOne team.
+
+
 
 # Bonus feature - Using H1QL Engine in Rails
 Any query executed within an H1QL block will be automatically secured. Engineers have less worries about introducing IDORs as all calls to the database are automatically secured.
