@@ -100,3 +100,7 @@ end
 # Inspiration
 - [NewRelic's NRQL](https://docs.newrelic.com/docs/insights/nrql-new-relic-query-language/nrql-reference/nrql-syntax-components-functions)
 - [ElasticSearch SQL](https://www.elastic.co/products/stack/elasticsearch-sql)
+
+# Open Questions
+- What about performance? If you have a query with a lots of joins and attribute references, will it significantly impact the performance?
+- How can we proof H1QL is actually safe? And how can we keep it safe?
