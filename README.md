@@ -1,4 +1,4 @@
-For a hack day, we wanted to see how feasible it is to accept any SQL from the client to quickly build features that show data and render graphs. The challenge is that we want to accept "any" querym don't want to expose our private data, and that we don't have authorization logic in our database layer.
+For a hack day, we wanted to see how feasible it is to accept any SQL from the client to quickly build features that show data and render graphs. The challenges are that we want to accept any query from any user, don't want to expose our private data, and that we don't have authorization logic in our database layer.
 
 # Meet H1QL
 H1QL (HackerOne Query Language) is a subset of SQL; it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow execution of operations that require direct file access. 
