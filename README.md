@@ -1,25 +1,7 @@
-**Problem:** We want to quickly build features that show data and render graphs. In our setup, filtering and aggregating data sets in GraphQL is complicated and time-consuming.
+For a hack day, we wanted to see how feasible it is to accept any SQL from the client to quickly build features that show data and render graphs. The challenge is that we want to accept "any" querym don't want to expose our private data, and that we don't have authorization logic in our database layer.
 
-**Solution:** Write React components that, using H1QL, query the database directly to get their data needs. H1QL is a safe subset of SQL and enforces strict access control to only expose data the requester is authorized to see. Engineers can quickly build reporting features as they are already familiar with the power of SQL and don’t have to invest in making it secure. 
-
-# Usage
-H1QL is a React component that requires a query that will be used to render its children.
-
-```javascript
-<H1QL query=“SELECT COUNT(*) as count, MAX(id) as max FROM users”>
-   ({ rows }) => {
-      <p>
-        Number of users: {rows[0].count}<br />
-        Latest id: {rows[0].max}
-      </p>
-   }
-</H1QL>
-```
-
-In the example posted above, the author has to build display logic of the data themselves. As H1QL query and responses are typed; some form of factory could be added to render results based on the H1QL response. 
-
-# Inner workings of H1QL
-H1QL is a subset of SQL; it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow execution of operations that require direct file access. 
+# Meet H1QL
+H1QL (HackerOne Query Language) is a subset of SQL; it only supports operations that can be executed safely. For example, only non-mutative operations are supported and it doesn't allow execution of operations that require direct file access. 
 
 Rather than relying on authorization logic living in the database, H1QL will transform the query that will be sent to the database and includes the authorization rules. The authorization constraints can be applied to row, column, and even column*row level (although this will give you some interesting "what is `NULL`" problems).
 
@@ -88,7 +70,7 @@ Unfortunately, you can't. We ([@mvggijssel](https://github.com/mvgijssel) and [@
 ![From h1ql to sql](./h1ql->sql.png)
 *We're using our existing authorization DSL to create the safe queries. The queries we execute are HUGE and could use some optimization.*
 
-# Bonus feature - Using H1QL Engine in Rails
+# Using H1QL Engine in Rails
 Any query executed within an H1QL block will be automatically secured. Engineers have less worries about introducing IDORs as all calls to the database are automatically secured.
 ```ruby
 class SecretController < ApplicationController
